@@ -1,5 +1,5 @@
-import { CarouselContract } from "./carouselContract";
-import { CarouselModel } from "./carouselModel";
+import { CarouselContract, CarouselItemContract } from "./carouselContract";
+import { CarouselItemModel, CarouselModel } from "./carouselModel";
 import { IModelBinder } from "@paperbits/common/editing";
 import { ModelBinderSelector } from "@paperbits/common/widgets";
 import { Contract, Bag } from "@paperbits/common";
@@ -18,8 +18,8 @@ export class CarouselModelBinder implements IModelBinder<CarouselModel> {
         private readonly modelBinderSelector: ModelBinderSelector
     ) { }
 
-    public async contractToModel(contract: CarouselContract, bindingContext?: Bag<any>): Promise<CarouselModel> {
-        const model = new CarouselModel();
+    public async contractItemToModel(contract: CarouselItemContract, bindingContext?: Bag<any>): Promise<CarouselItemModel> {
+        const model = new CarouselItemModel();
 
         contract.nodes = contract.nodes || [];
         model.styles = contract.styles || {};
@@ -34,16 +34,45 @@ export class CarouselModelBinder implements IModelBinder<CarouselModel> {
         return model;
     }
 
+    public async contractToModel(contract: CarouselContract, bindingContext?: Bag<any>): Promise<CarouselModel> {
+        const model = new CarouselModel();
+
+        contract.carouselItems = contract.carouselItems || [];
+        model.styles = contract.styles || {};
+
+        const modelPromises = contract.carouselItems.map(async (contract: Contract) => {
+            return await this.contractItemToModel(contract, bindingContext);
+        });
+
+        model.carouselItems = await Promise.all<any>(modelPromises);
+
+        return model;
+    }
+
+    public itemModelToContract(carouselItemModel: CarouselItemModel): CarouselItemContract {
+        const carouselContract: CarouselItemContract = {
+            type: "carousel-item",
+            styles: carouselItemModel.styles,
+            nodes: []
+        };
+
+        carouselItemModel.widgets.forEach(carouselItemModel => {
+            const modelBinder = this.modelBinderSelector.getModelBinderByModel(carouselItemModel);
+            carouselContract.nodes.push(modelBinder.modelToContract(carouselItemModel));
+        });
+
+        return carouselContract;
+    }
+
     public modelToContract(carouselModel: CarouselModel): CarouselContract {
         const carouselContract: CarouselContract = {
             type: "carousel",
             styles: carouselModel.styles,
-            nodes: []
+            carouselItems: []
         };
 
-        carouselModel.widgets.forEach(widgetModel => {
-            const modelBinder = this.modelBinderSelector.getModelBinderByModel(widgetModel);
-            carouselContract.nodes.push(modelBinder.modelToContract(widgetModel));
+        carouselModel.carouselItems.forEach(carouselItemModel => {
+            carouselContract.carouselItems.push(this.itemModelToContract(carouselItemModel));
         });
 
         return carouselContract;

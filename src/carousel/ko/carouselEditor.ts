@@ -86,13 +86,13 @@ export class CarouselEditor {
             this.stretch(!!stretchStyle);
         }
 
-        this.gridModel = <GridModel>this.model.widgets[0];
-        const gridStyles = this.gridModel.styles;
-        const containerSizeStyles = Objects.getObjectAt<SizeStylePluginConfig>(`instance/size/${viewport}`, gridStyles);
-        const marginStyles = Objects.getObjectAt<MarginStylePluginConfig>(`instance/margin/${viewport}`, gridStyles);
+        // this.gridModel = <GridModel>this.model.widgets[0];
+        // const gridStyles = this.gridModel.styles;
+        // const containerSizeStyles = Objects.getObjectAt<SizeStylePluginConfig>(`instance/size/${viewport}`, gridStyles);
+        // const marginStyles = Objects.getObjectAt<MarginStylePluginConfig>(`instance/margin/${viewport}`, gridStyles);
 
-        this.box({ margin: marginStyles });
-        this.sizeConfig(containerSizeStyles);
+        // this.box({ margin: marginStyles });
+        // this.sizeConfig(containerSizeStyles);
     }
 
     /**

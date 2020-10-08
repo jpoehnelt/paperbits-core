@@ -1,15 +1,19 @@
-<section class="carousel" data-bind="styled: styles">
-    <ol class="carousel-indicators">
+<section class="carousel" data-bind="styled: styles, attr: { 'data-bind': 'carousel: {}' }">
+    <ol class="carousel-indicators" data-bind="carousel {}">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
     </ol>
-    <div class="carousel-item">
-        <!-- ko foreach: { data: widgets, as: 'widget' } -->
+
+    <!-- ko foreach: { data: carouselItems, as: 'carouselItem' } -->
+    <div class="carousel-item" data-bind="css: { active: carouselItem === $component.activeItem()  }">
+        <!-- ko foreach: { data: carouselItem.widgets, as: 'widget' } -->
         <!-- ko widget: widget -->
         <!-- /ko -->
         <!-- /ko -->
     </div>
+    <!-- /ko -->
+
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>

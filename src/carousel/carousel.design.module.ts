@@ -1,7 +1,7 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { CarouselViewModel } from "./carouselViewModel";
-import { CarouselModelBinder } from "../carouselModelBinder";
-import { CarouselViewModelBinder } from "./carouselViewModelBinder";
+import { CarouselViewModel } from "./ko/carouselViewModel";
+import { CarouselModelBinder } from "./carouselModelBinder";
+import { CarouselViewModelBinder } from "./ko/carouselViewModelBinder";
 
 export class CarouselModule implements IInjectorModule {
     public register(injector: IInjector): void {

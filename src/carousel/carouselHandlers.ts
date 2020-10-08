@@ -81,29 +81,6 @@ export class CarouselHandlers {
             }]
         };
 
-        if (context.model.widgets.length === 0) {
-            carouselContextualEditor.hoverCommands.push({
-                position: "center",
-                tooltip: "Add row",
-                color: "#29c4a9",
-                component: {
-                    name: "grid-layout-selector",
-                    params: {
-                        onSelect: (newRowModel: RowModel) => {
-                            const carouselModel = context.model;
-                            const carouselBinding = context.binding;
-
-                            carouselModel.widgets.push(newRowModel);
-                            carouselBinding.applyChanges();
-
-                            this.viewManager.clearContextualEditors();
-                            this.eventManager.dispatchEvent("onContentUpdate");
-                        }
-                    }
-                }
-            });
-        }
-
         return carouselContextualEditor;
     }
 }
