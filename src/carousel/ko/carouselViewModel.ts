@@ -18,4 +18,32 @@ export class CarouselViewModel {
         this.activeItem = ko.observable();
         this.styles = ko.observable<StyleModel>();
     }
+
+    public prev(): void {
+        const items = this.carouselItems();
+        const activeItem = this.activeItem();
+        let index = items.indexOf(activeItem);
+
+        index--;
+
+        if (index < 0) {
+            index = items.length - 1;
+        }
+
+        this.activeItem(items[index]);
+    }
+
+    public next(): void {
+        const items = this.carouselItems();
+        const activeItem = this.activeItem();
+        let index = items.indexOf(activeItem);
+
+        index++;
+
+        if (index >= items.length) {
+            index = 0;
+        }
+
+        this.activeItem(items[index]);
+    }
 }
