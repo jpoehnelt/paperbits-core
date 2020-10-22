@@ -33,7 +33,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
         }
 
         if (viewModels.length === 0) {
-            viewModels.push(<any>new PlaceholderViewModel("Carousel item"));
+            viewModels.push(<any>new PlaceholderViewModel("Slide"));
         }
 
         viewModel.widgets(viewModels);
