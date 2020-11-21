@@ -1,17 +1,87 @@
 ﻿import * as ko from "knockout";
 import { IWidgetBinding } from "@paperbits/common/editing";
 
+import * as ReactDOM from "react-dom";
+import { createElement } from "react";
+
+
+export interface UiComponentBinder {
+
+}
+
+export class KnockoutUIComponentBinder implements UiComponentBinder {
+    public init(): void {
+        //
+    }
+
+    public update(): void {
+        //
+    }
+}
+
+const makeArray = (arrayLikeObject) => {
+    const result = [];
+    for (let i = 0, j = arrayLikeObject.length; i < j; i++) {
+        result.push(arrayLikeObject[i]);
+    }
+    return result;
+};
+
+const cloneNodes = (nodesArray, shouldCleanNodes) => {
+    const newNodesArray = [];
+
+    for (let i = 0, j = nodesArray.length; i < j; i++) {
+        const clonedNode = nodesArray[i].cloneNode(true);
+        newNodesArray.push(shouldCleanNodes ? ko.cleanNode(clonedNode) : clonedNode);
+    }
+    return newNodesArray;
+};
+
+const cloneTemplateIntoElement = (componentDefinition: any, element: any): HTMLElement => {
+    const template = componentDefinition["template"];
+
+    if (!template) {
+        return element;
+    }
+
+    const clonedNodesArray = cloneNodes(template, false);
+    ko.virtualElements.setDomNodeChildren(element, clonedNodesArray);
+    return element;
+};
+
 export class WidgetBindingHandler {
     public constructor() {
         let componentLoadingOperationUniqueId = 0;
 
         ko.bindingHandlers["widget"] = {
             init(element: any, valueAccessor: any, ignored1: any, ignored2: any, bindingContext: ko.BindingContext): any {
-                const widgetConfig = ko.utils.unwrapObservable(valueAccessor());
+                const componentViewModel = ko.utils.unwrapObservable(valueAccessor());
 
-                if (!widgetConfig) {
+                if (!componentViewModel) {
                     return;
                 }
+
+                let registration = Reflect.getMetadata("paperbits-component", componentViewModel.constructor);
+
+                if (!registration) {
+                    // throw new Error(`Could not find component registration for view model: ${componentViewModel}`);
+
+                    registration = Reflect.getMetadata("paperbits-component", componentViewModel.type);
+                }
+
+                const componentName = registration.name;
+
+
+                if (registration.framework === "react") {
+                    // const reactElement = createElement(componentViewModel, {});
+                    ReactDOM.render(componentViewModel, element);
+
+                    // const abc = ReactDOM.render(componentViewModel, element);
+                    // console.log(abc);
+                    // abc.setState(state => ({ clickCount: 22 }));
+                    return;
+                }
+
 
                 let currentViewModel;
                 let currentLoadingOperationId;
@@ -46,20 +116,11 @@ export class WidgetBindingHandler {
                     }
 
                     const loadingOperationId = currentLoadingOperationId = ++componentLoadingOperationUniqueId;
-
-                    const registration = Reflect.getMetadata("knockout-component", componentViewModel.constructor);
-
-                    if (!registration) {
-                        throw new Error(`Could not find component registration for view model: ${componentViewModel}`);
-                    }
-
                     const binding: IWidgetBinding<any> = componentViewModel["widgetBinding"];
 
                     if (binding && binding.onCreate) {
                         binding.onCreate();
                     }
-
-                    const componentName = registration.name;
 
                     ko.components.get(componentName, componentDefinition => {
                         // If this is not the current load operation for this element, ignore it.
@@ -110,35 +171,6 @@ export class WidgetBindingHandler {
         };
 
         ko.virtualElements.allowedBindings["widget"] = true;
-
-        const makeArray = (arrayLikeObject) => {
-            const result = [];
-            for (let i = 0, j = arrayLikeObject.length; i < j; i++) {
-                result.push(arrayLikeObject[i]);
-            }
-            return result;
-        };
-
-        const cloneNodes = (nodesArray, shouldCleanNodes) => {
-            const newNodesArray = [];
-
-            for (let i = 0, j = nodesArray.length; i < j; i++) {
-                const clonedNode = nodesArray[i].cloneNode(true);
-                newNodesArray.push(shouldCleanNodes ? ko.cleanNode(clonedNode) : clonedNode);
-            }
-            return newNodesArray;
-        };
-
-        function cloneTemplateIntoElement(componentDefinition: any, element: any): HTMLElement {
-            const template = componentDefinition["template"];
-
-            if (!template) {
-                return element;
-            }
-
-            const clonedNodesArray = cloneNodes(template, false);
-            ko.virtualElements.setDomNodeChildren(element, clonedNodesArray);
-            return element;
-        }
+        ko.virtualElements.allowedBindings["widgetKnockout"] = true;
     }
 }
