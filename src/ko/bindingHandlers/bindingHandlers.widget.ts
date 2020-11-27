@@ -3,6 +3,7 @@ import { IWidgetBinding } from "@paperbits/common/editing";
 
 import * as ReactDOM from "react-dom";
 import { createElement } from "react";
+import { TheBinding } from "../../binding";
 
 
 export interface UiComponentBinder {
@@ -61,6 +62,22 @@ export class WidgetBindingHandler {
                     return;
                 }
 
+                if (componentViewModel instanceof TheBinding) {
+                    const theBinding = <TheBinding>componentViewModel;
+
+                    const reactElement = createElement(theBinding.viewModelClass, {});
+                    const viewModelInstance = ReactDOM.render(reactElement, element);
+
+                    theBinding.viewModelInstance = viewModelInstance;
+
+                    // const abc = ReactDOM.render(componentViewModel, element);
+                    // console.log(abc);
+                    // abc.setState(state => ({ clickCount: 22 }));
+
+                    return;
+                }
+
+
                 let registration = Reflect.getMetadata("paperbits-component", componentViewModel.constructor);
 
                 if (!registration) {
@@ -72,15 +89,6 @@ export class WidgetBindingHandler {
                 const componentName = registration.name;
 
 
-                if (registration.framework === "react") {
-                    // const reactElement = createElement(componentViewModel, {});
-                    ReactDOM.render(componentViewModel, element);
-
-                    // const abc = ReactDOM.render(componentViewModel, element);
-                    // console.log(abc);
-                    // abc.setState(state => ({ clickCount: 22 }));
-                    return;
-                }
 
 
                 let currentViewModel;
