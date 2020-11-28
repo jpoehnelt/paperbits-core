@@ -1,20 +1,15 @@
 import { Bag } from "@paperbits/common";
+import { IWidgetBinding } from "@paperbits/common/editing";
 
-export class TheBinding {
+export class WidgetBinding implements IWidgetBinding<any> {
     public framework: string;
     public viewModelClass: any;
     public viewModelInstance: any;
     public model: any;
-
-
-    // /**
-    //  * "click-counter"
-    //  */
-    // public name: string;
-    // displayName: "Click counter",
-    // readonly: bindingContext ? bindingContext.readonly : false,
-    // model: model,
-    // draggable: true,
-    // editor: "click-counter-editor",
-    public applyChanges: (model: any, viewModel?: any, bindingContext?: Bag<any>) => Promise<void>;
+    public name: string;
+    public displayName: string;
+    public readonly: boolean;
+    public draggable: boolean;
+    public editor: string;
+    public applyChanges: (model: any) => Promise<void>;
 }

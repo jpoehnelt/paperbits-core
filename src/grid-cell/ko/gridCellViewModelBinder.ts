@@ -28,7 +28,7 @@ export class GridCellViewModelBinder implements ViewModelBinder<GridCellModel, G
             const widgetViewModelBinder = this.viewModelBinderSelector.getViewModelBinderByModel(widgetModel);
 
             if (widgetViewModelBinder["getBinding"]) {
-                const binding = await widgetViewModelBinder["getBinding"]();
+                const binding = await widgetViewModelBinder["getBinding"](widgetModel);
                 widgetViewModels.push(binding);
             }
             else {

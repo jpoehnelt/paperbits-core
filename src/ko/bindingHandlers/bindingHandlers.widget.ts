@@ -3,16 +3,16 @@ import { IWidgetBinding } from "@paperbits/common/editing";
 
 import * as ReactDOM from "react-dom";
 import { createElement } from "react";
-import { TheBinding } from "../../binding";
+import { WidgetBinding } from "../../binding";
 
 
 export interface UiComponentBinder {
-    init(element: HTMLElement, binding: TheBinding): void;
+    init(element: HTMLElement, binding: WidgetBinding): void;
     dispose(): void;
 }
 
 export class KnockoutUiComponentBinder implements UiComponentBinder {
-    public init(element: HTMLElement, binding: TheBinding): void {
+    public init(element: HTMLElement, binding: WidgetBinding): void {
         //
     }
 
@@ -22,10 +22,12 @@ export class KnockoutUiComponentBinder implements UiComponentBinder {
 }
 
 export class ReactUiComponentBinder implements UiComponentBinder {
-    public init(element: HTMLElement, binding: TheBinding): void {
+    public init(element: HTMLElement, binding: WidgetBinding): void {
         const reactElement = createElement(binding.viewModelClass, {} /* model? */);
         const viewModelInstance = ReactDOM.render(reactElement, element);
         binding.viewModelInstance = viewModelInstance;
+
+        binding.applyChanges(binding.model);
     }
 
     public dispose(): void {
@@ -77,8 +79,8 @@ export class WidgetBindingHandler {
                     return;
                 }
 
-                if (componentViewModel instanceof TheBinding) {
-                    const theBinding = <TheBinding>componentViewModel;
+                if (componentViewModel instanceof WidgetBinding) {
+                    const theBinding = <WidgetBinding>componentViewModel;
 
                     let binder: UiComponentBinder;
 
