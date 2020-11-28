@@ -1,39 +1,10 @@
 ﻿import * as ko from "knockout";
 import { IWidgetBinding } from "@paperbits/common/editing";
-
-import * as ReactDOM from "react-dom";
-import { createElement } from "react";
+import { ReactComponentBinder } from "@paperbits/common/react/reactComponentBinder";
+// import { KnockoutComponentBinder } from "@paperbits/common/ko/knockoutComponentBinder";
+import { ComponentBinder } from "@paperbits/common/editing/componentBinder";
 import { WidgetBinding } from "../../binding";
 
-
-export interface UiComponentBinder {
-    init(element: HTMLElement, binding: WidgetBinding): void;
-    dispose(): void;
-}
-
-export class KnockoutUiComponentBinder implements UiComponentBinder {
-    public init(element: HTMLElement, binding: WidgetBinding): void {
-        //
-    }
-
-    public dispose(): void {
-        //
-    }
-}
-
-export class ReactUiComponentBinder implements UiComponentBinder {
-    public init(element: HTMLElement, binding: WidgetBinding): void {
-        const reactElement = createElement(binding.viewModelClass, {} /* model? */);
-        const viewModelInstance = ReactDOM.render(reactElement, element);
-        binding.viewModelInstance = viewModelInstance;
-
-        binding.applyChanges(binding.model);
-    }
-
-    public dispose(): void {
-        //
-    }
-}
 
 const makeArray = (arrayLikeObject) => {
     const result = [];
@@ -73,23 +44,20 @@ export class WidgetBindingHandler {
 
         ko.bindingHandlers["widget"] = {
             init(element: any, valueAccessor: any, ignored1: any, ignored2: any, bindingContext: ko.BindingContext): any {
-                const componentViewModel = ko.utils.unwrapObservable(valueAccessor());
+                const bindingConfig = ko.utils.unwrapObservable(valueAccessor());
 
-                if (!componentViewModel) {
+                if (!bindingConfig) {
                     return;
                 }
 
-                if (componentViewModel instanceof WidgetBinding) {
-                    const theBinding = <WidgetBinding>componentViewModel;
+                if (bindingConfig instanceof WidgetBinding) {
+                    const theBinding = <WidgetBinding>bindingConfig;
 
-                    let binder: UiComponentBinder;
+                    let binder: ComponentBinder;
 
                     switch (theBinding.framework) {
-                        case "knockout":
-                            binder = new KnockoutUiComponentBinder();
-                            break;
                         case "react":
-                            binder = new ReactUiComponentBinder();
+                            binder = new ReactComponentBinder();
                             break;
                     }
 
@@ -97,19 +65,14 @@ export class WidgetBindingHandler {
                     return;
                 }
 
-
-                let registration = Reflect.getMetadata("paperbits-component", componentViewModel.constructor);
+                /* Legacy binding logic */
+                const registration = Reflect.getMetadata("paperbits-component", bindingConfig.constructor);
 
                 if (!registration) {
-                    // throw new Error(`Could not find component registration for view model: ${componentViewModel}`);
-
-                    registration = Reflect.getMetadata("paperbits-component", componentViewModel.type);
+                    throw new Error(`Could not find component registration for view model: ${bindingConfig}`);
                 }
 
                 const componentName = registration.name;
-
-
-
 
                 let currentViewModel;
                 let currentLoadingOperationId;
@@ -199,6 +162,5 @@ export class WidgetBindingHandler {
         };
 
         ko.virtualElements.allowedBindings["widget"] = true;
-        ko.virtualElements.allowedBindings["widgetKnockout"] = true;
     }
 }
