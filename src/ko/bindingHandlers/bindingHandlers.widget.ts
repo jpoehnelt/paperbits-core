@@ -36,7 +36,6 @@ const cloneTemplateIntoElement = (componentDefinition: any, element: any): HTMLE
 };
 
 
-
 export class WidgetBindingHandler {
     public constructor() {
         let componentLoadingOperationUniqueId = 0;
@@ -50,17 +49,22 @@ export class WidgetBindingHandler {
                 }
 
                 if (bindingConfig instanceof WidgetBinding) {
-                    const theBinding = <WidgetBinding>bindingConfig;
+                    const binding = <WidgetBinding>bindingConfig;
 
                     let binder: ComponentBinder;
 
-                    switch (theBinding.framework) {
+                    switch (binding.framework) {
                         case "react":
                             binder = new ReactComponentBinder();
                             break;
                     }
 
-                    binder.init(element, theBinding);
+                    binder.init(element, binding);
+
+                    if (binding.draggable) {
+                        ko.applyBindingsToNode(element, { draggable: {} }, null);
+                    }
+
                     return;
                 }
 
