@@ -41,25 +41,26 @@ export class WidgetBindingHandler {
         let componentLoadingOperationUniqueId = 0;
 
         ko.bindingHandlers["widget"] = {
-            init(element: any, valueAccessor: any, ignored1: any, ignored2: any, bindingContext: ko.BindingContext): any {
+            init(element: Element, valueAccessor: any, ignored1: any, ignored2: any, bindingContext: ko.BindingContext): any {
                 const bindingConfig = ko.utils.unwrapObservable(valueAccessor());
 
                 if (!bindingConfig) {
                     return;
                 }
 
+                /* New  binding logic */
                 if (bindingConfig instanceof WidgetBinding) {
                     const binding = <WidgetBinding>bindingConfig;
 
-                    let binder: ComponentBinder;
+                    let componentBinder: ComponentBinder;
 
                     switch (binding.framework) {
                         case "react":
-                            binder = new ReactComponentBinder();
+                            componentBinder = new ReactComponentBinder();
                             break;
                     }
 
-                    binder.init(element, binding);
+                    componentBinder.init(<HTMLElement>element, binding);
 
                     if (binding.draggable) {
                         ko.applyBindingsToNode(element, { draggable: {} }, null);
@@ -139,7 +140,7 @@ export class WidgetBindingHandler {
                         currentViewModel = componentViewModel;
                         ko.applyBindingsToDescendants(childBindingContext, root);
 
-                        let nonVirtualElement = element;
+                        let nonVirtualElement: Node = element;
 
                         if (nonVirtualElement.nodeName.startsWith("#")) {
                             do {
