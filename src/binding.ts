@@ -1,3 +1,5 @@
+import { Bag } from "@paperbits/common";
+
 export class TheBinding {
     public framework: string;
     public viewModelClass: any;
@@ -14,8 +16,5 @@ export class TheBinding {
     // model: model,
     // draggable: true,
     // editor: "click-counter-editor",
-    // applyChanges: async () => {
-    //     await this.modelToViewModel(model, viewModel, bindingContext);
-    //     this.eventManager.dispatchEvent("onContentUpdate");
-    // }
+    public applyChanges: (model: any, viewModel?: any, bindingContext?: Bag<any>) => Promise<void>;
 }

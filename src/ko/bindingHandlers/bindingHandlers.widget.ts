@@ -7,15 +7,28 @@ import { TheBinding } from "../../binding";
 
 
 export interface UiComponentBinder {
-
+    init(element: HTMLElement, binding: TheBinding): void;
+    dispose(): void;
 }
 
-export class KnockoutUIComponentBinder implements UiComponentBinder {
-    public init(): void {
+export class KnockoutUiComponentBinder implements UiComponentBinder {
+    public init(element: HTMLElement, binding: TheBinding): void {
         //
     }
 
-    public update(): void {
+    public dispose(): void {
+        //
+    }
+}
+
+export class ReactUiComponentBinder implements UiComponentBinder {
+    public init(element: HTMLElement, binding: TheBinding): void {
+        const reactElement = createElement(binding.viewModelClass, {} /* model? */);
+        const viewModelInstance = ReactDOM.render(reactElement, element);
+        binding.viewModelInstance = viewModelInstance;
+    }
+
+    public dispose(): void {
         //
     }
 }
@@ -50,6 +63,8 @@ const cloneTemplateIntoElement = (componentDefinition: any, element: any): HTMLE
     return element;
 };
 
+
+
 export class WidgetBindingHandler {
     public constructor() {
         let componentLoadingOperationUniqueId = 0;
@@ -65,15 +80,18 @@ export class WidgetBindingHandler {
                 if (componentViewModel instanceof TheBinding) {
                     const theBinding = <TheBinding>componentViewModel;
 
-                    const reactElement = createElement(theBinding.viewModelClass, {});
-                    const viewModelInstance = ReactDOM.render(reactElement, element);
+                    let binder: UiComponentBinder;
 
-                    theBinding.viewModelInstance = viewModelInstance;
+                    switch (theBinding.framework) {
+                        case "knockout":
+                            binder = new KnockoutUiComponentBinder();
+                            break;
+                        case "react":
+                            binder = new ReactUiComponentBinder();
+                            break;
+                    }
 
-                    // const abc = ReactDOM.render(componentViewModel, element);
-                    // console.log(abc);
-                    // abc.setState(state => ({ clickCount: 22 }));
-
+                    binder.init(element, theBinding);
                     return;
                 }
 
