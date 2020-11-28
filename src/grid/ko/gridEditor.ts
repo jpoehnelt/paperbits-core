@@ -1,12 +1,10 @@
 import * as _ from "lodash";
-import * as ko from "knockout";
 import * as Utils from "@paperbits/common/utils";
 import { ViewManager, ViewManagerMode, IHighlightConfig, IContextCommandSet as IContextCommandSet } from "@paperbits/common/ui";
 import { IWidgetBinding, GridHelper, WidgetContext, WidgetStackItem } from "@paperbits/common/editing";
 import { IWidgetService } from "@paperbits/common/widgets";
 import { EventManager } from "@paperbits/common/events";
 import { ContentModel } from "../../content";
-import { WidgetBinding } from "../../binding";
 
 export class GridEditor {
     private activeHighlightedElement: HTMLElement;
@@ -50,25 +48,17 @@ export class GridEditor {
     }
 
     private getContextualEditor(element: HTMLElement, half: string): IContextCommandSet {
-        // const bindings = GridHelper.getParentWidgetBindings(element);
+        const bindings = GridHelper.getParentWidgetBindings(element);
 
-        // const providers = bindings
-        //     .filter(x => !!x.provides)
-        //     .map(x => x.provides)
-        //     .reduce((acc, val) => acc.concat(val), []);
-
-        const providers = ["html", "js"];
+        const providers = bindings
+            .filter(x => !!x.provides)
+            .map(x => x.provides)
+            .reduce((acc, val) => acc.concat(val), []);
 
         let model;
-        let binding: IWidgetBinding<any>;
+        let binding;
 
-        const attachedData = ko.dataFor(element);
-
-        if (attachedData instanceof WidgetBinding) {
-            model = attachedData.model;
-            binding = attachedData;
-        }
-        else {
+        if (element) {
             model = GridHelper.getModel(element);
             binding = GridHelper.getWidgetBinding(element);
         }
@@ -187,16 +177,7 @@ export class GridEditor {
             return;
         }
 
-        let widgetBinding: IWidgetBinding<any>;
-
-        const attachedData = ko.dataFor(element);
-
-        if (attachedData instanceof WidgetBinding) {
-            widgetBinding = attachedData;
-        }
-        else {
-            widgetBinding = GridHelper.getWidgetBinding(element);
-        }
+        const widgetBinding = GridHelper.getWidgetBinding(element);
 
         if (!widgetBinding) {
             return;
@@ -516,52 +497,34 @@ export class GridEditor {
             const element = elements[i];
             const widgetBinding = GridHelper.getWidgetBinding(element);
 
-            const attachedData = ko.dataFor(element);
-
-            let bindingName: string;
-            let bindingDisplayName: string;
-            let isReadonly: boolean;
-
-            if (attachedData instanceof WidgetBinding) {
-                const binding = <WidgetBinding>attachedData;
-                bindingName = binding.name;
-                bindingDisplayName = binding.displayName;
-                isReadonly = binding.readonly;
-            }
-            else if (widgetBinding) {
-                bindingName = widgetBinding.name;
-                bindingDisplayName = widgetBinding.displayName;
-                isReadonly = widgetBinding.readonly;
-            }
-            else {
+            if (!widgetBinding) {
                 continue;
             }
 
-
-            if (isReadonly || bindingName === current) {
+            if (!widgetBinding || widgetBinding.readonly || widgetBinding === current) {
                 continue;
             }
 
-            const index = tobeDeleted.indexOf(bindingName);
+            const index = tobeDeleted.indexOf(widgetBinding.name);
             tobeDeleted.splice(index, 1);
 
             highlightedElement = element;
-            highlightedText = bindingDisplayName;
+            highlightedText = widgetBinding.displayName;
 
-            current = bindingName;
+            current = widgetBinding;
 
             const quadrant = Utils.pointerToClientQuadrant(pointerX, pointerY, element);
             const half = quadrant.vertical;
-            const active = this.actives[bindingName];
+            const active = this.actives[widgetBinding.name];
 
             const contextualEditor = this.getContextualEditor(element, half);
 
             highlightColor = contextualEditor.color;
 
             if (!active || element !== active.element || half !== active.half) {
-                this.viewManager.setContextualEditor(bindingName, contextualEditor);
+                this.viewManager.setContextualEditor(widgetBinding.name, contextualEditor);
 
-                this.actives[bindingName] = {
+                this.actives[widgetBinding.name] = {
                     element: element,
                     half: quadrant.vertical
                 };

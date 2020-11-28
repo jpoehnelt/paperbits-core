@@ -1,9 +1,8 @@
 ﻿import * as ko from "knockout";
-import { IWidgetBinding } from "@paperbits/common/editing";
+import { IWidgetBinding, WidgetBinding } from "@paperbits/common/editing";
 import { ReactComponentBinder } from "@paperbits/common/react/reactComponentBinder";
 // import { KnockoutComponentBinder } from "@paperbits/common/ko/knockoutComponentBinder";
 import { ComponentBinder } from "@paperbits/common/editing/componentBinder";
-import { WidgetBinding } from "../../binding";
 
 
 const makeArray = (arrayLikeObject) => {
