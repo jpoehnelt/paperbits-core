@@ -137,11 +137,11 @@ export class WidgetBindingHandler {
 
                         let nonVirtualElement = element;
 
-                        if (nonVirtualElement.nodeName === "#comment") {
+                        if (nonVirtualElement.nodeName.startsWith("#")) {
                             do {
                                 nonVirtualElement = nonVirtualElement.nextSibling;
                             }
-                            while (nonVirtualElement !== null && nonVirtualElement.nodeName === "#comment");
+                            while (nonVirtualElement !== null && nonVirtualElement.nodeName.startsWith("#"));
                         }
 
                         if (nonVirtualElement) {
@@ -149,8 +149,17 @@ export class WidgetBindingHandler {
 
                             const binding: IWidgetBinding<any> = componentViewModel["widgetBinding"];
 
-                            if (binding?.draggable) {
-                                ko.applyBindingsToNode(nonVirtualElement, { draggable: {} }, null);
+                            if (binding) {
+                                ko.applyBindingsToNode(nonVirtualElement, {
+                                    css: {
+                                        "block": binding.flow !== "inline" && binding.flow !== "none",
+                                        "inline-block": binding.flow === "inline"
+                                    }
+                                }, null);
+
+                                if (binding.draggable) {
+                                    ko.applyBindingsToNode(nonVirtualElement, { draggable: {} }, null);
+                                }
                             }
                         }
                     });
