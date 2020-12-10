@@ -1,7 +1,6 @@
 import * as Utils from "@paperbits/common/utils";
 import parallel from "await-parallel-limit";
 import template from "./page.html";
-import { minify } from "html-minifier-terser";
 import {
     IPublisher,
     HtmlPage,
@@ -9,14 +8,15 @@ import {
     SitemapBuilder,
     SearchIndexBuilder
 } from "@paperbits/common/publishing";
-import { IBlobStorage, Query, Page } from "@paperbits/common/persistence";
+import { maxParallelPublisingTasks } from "@paperbits/common/constants";
+import { IBlobStorage, Query } from "@paperbits/common/persistence";
 import { IPageService, PageContract } from "@paperbits/common/pages";
 import { ISiteService, SiteSettingsContract } from "@paperbits/common/sites";
 import { Logger } from "@paperbits/common/logging";
 import { ILocaleService, LocaleModel } from "@paperbits/common/localization";
 import { IMediaService } from "@paperbits/common/media";
 import { StyleCompiler, StyleManager } from "@paperbits/common/styles";
-import { LocalStyleBuilder } from "./localStyleBuilder";
+import { LocalStyleBuilder } from "@paperbits/styles";
 
 
 export class PagePublisher implements IPublisher {
@@ -42,24 +42,7 @@ export class PagePublisher implements IPublisher {
 
         try {
             const htmlContent = await this.htmlPagePublisher.renderHtml(page);
-
-            return minify(htmlContent, {
-                caseSensitive: true,
-                collapseBooleanAttributes: true,
-                collapseInlineTagWhitespace: false,
-                collapseWhitespace: true,
-                html5: true,
-                minifyCSS: true,
-                preserveLineBreaks: false,
-                removeComments: true,
-                removeEmptyAttributes: true,
-                removeOptionalTags: false,
-                removeRedundantAttributes: false,
-                removeScriptTypeAttributes: false,
-                removeStyleLinkTypeAttributes: false,
-                removeTagWhitespace: false,
-                removeAttributeQuotes: false
-            });
+            return htmlContent;
         }
         catch (error) {
             throw new Error(`Unable to render page "${page.title}": ${error.stack || error.message}`);
@@ -132,7 +115,7 @@ export class PagePublisher implements IPublisher {
                     htmlPage.linkedData = structuredData;
                 }
                 catch (error) {
-                    console.log("Unable to parse page linked data.");
+                    this.logger.trackEvent("Publishing", { message: "Unable to parse page linked data." });
                 }
             }
 
@@ -188,7 +171,7 @@ export class PagePublisher implements IPublisher {
                 tasks.push(() => this.renderAndUpload(siteSettings, page));
             }
 
-            await parallel(tasks, 7);
+            await parallel(tasks, maxParallelPublisingTasks);
 
             if (pagesOfResults.takeNext) {
                 pagesOfResults = await pagesOfResults.takeNext();
@@ -219,7 +202,7 @@ export class PagePublisher implements IPublisher {
                     tasks.push(() => this.renderAndUpload(siteSettings, page, localeCode));
                 }
 
-                await parallel(tasks, 7);
+                await parallel(tasks, maxParallelPublisingTasks);
 
                 if (pagesOfResults.takeNext) {
                     pagesOfResults = await pagesOfResults.takeNext();

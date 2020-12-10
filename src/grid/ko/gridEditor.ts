@@ -470,6 +470,15 @@ export class GridEditor {
                 position: "top right",
                 color: "#607d8b",
                 callback: () => this.viewManager.openWidgetEditor(context.binding)
+            },
+            {
+                tooltip: "Switch to parent",
+                iconClass: "paperbits-enlarge-vertical",
+                position: "top right",
+                color: "#607d8b",
+                callback: () => {
+                    context.switchToParent(context.parentBinding.model.constructor);
+                }
             }]
         };
 
@@ -487,16 +496,6 @@ export class GridEditor {
         for (let i = elements.length - 1; i >= 0; i--) {
             const element = elements[i];
             const widgetBinding = GridHelper.getWidgetBinding(element);
-
-
-            // if (element.classList.contains("card")) {
-            //     debugger;
-            // }
-
-            // if (element.tagName === "SECTION") {
-            //     debugger;
-            // }
-
 
             if (!widgetBinding) {
                 continue;

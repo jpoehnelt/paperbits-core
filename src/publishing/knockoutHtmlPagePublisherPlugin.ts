@@ -9,23 +9,39 @@ export class KnockoutHtmlPagePublisherPlugin implements HtmlPagePublisherPlugin 
     constructor(
         private readonly contentViewModelBinder: ContentViewModelBinder,
         private readonly layoutService: ILayoutService
-    ) { }
-
-    public async apply(document: Document, page: HtmlPage): Promise<void> {
+    ) {
         ko.tasks.scheduler = (callback) => setImmediate(callback);
+    }
 
-        return new Promise(async (resolve, reject) => {
+    private render(doc: Document, layoutContentViewModel: any): Promise<void> {
+        return new Promise((resolve, reject) => {
             try {
-                const layoutContract = await this.layoutService.getLayoutByPermalink(page.permalink, page.bindingContext?.locale);
-                const layoutContentContract = await this.layoutService.getLayoutContent(layoutContract.key, page.bindingContext?.locale);
-                const layoutContentViewModel = await this.contentViewModelBinder.getContentViewModelByKey(layoutContentContract, page.bindingContext);
+                const onDescendantsComplete = () => {
+                    resolve();
+                };
 
-                ko.applyBindingsToNode(document.body, { widget: layoutContentViewModel }, null);
-                setTimeout(resolve, 500);
+                ko.applyBindingsToNode(doc.body, {
+                    widget: layoutContentViewModel,
+                    descendantsComplete: onDescendantsComplete,
+                }, null);
             }
             catch (error) {
                 reject(`Unable to apply knockout bindings to a template: ${error.stack || error.message}`);
             }
         });
+    }
+
+    public async apply(doc: Document, page: HtmlPage): Promise<void> {
+        const layoutContract = await this.layoutService.getLayoutByPermalink(page.permalink, page.bindingContext?.locale);
+
+        if (!layoutContract) {
+            throw new Error(`No matching layouts found for page with permalink "${page.permalink}".`);
+        }
+
+        const layoutContentContract = await this.layoutService.getLayoutContent(layoutContract.key, page.bindingContext?.locale);
+        const layoutContentViewModel = await this.contentViewModelBinder.getContentViewModelByKey(layoutContentContract, page.bindingContext);
+
+        await this.render(doc, layoutContentViewModel);
+        setTimeout(() => ko.cleanNode(doc.body), 400);
     }
 }

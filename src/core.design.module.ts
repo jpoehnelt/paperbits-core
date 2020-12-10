@@ -58,8 +58,10 @@ import { ContentEditorModule } from "./content/ko";
 import { ViewStack } from "./ko/ui/viewStack";
 import { MediaDisplay } from "./workshops/media/ko/mediaDisplay";
 import { Lightbox } from "./workshops/media/ko/lightbox";
-import { LocalStorageCache } from "@paperbits/common/caching";
 import { CarouselEditorModule } from "./carousel/ko/carouselEditor.module";
+import { MapDesignModule } from "./map/ko/map.design.module";
+import { MemoryCache } from "@paperbits/common/caching";
+// import { DividerDesignModule } from "./divider/divider.design.module";
 
 
 export class CoreDesignModule implements IInjectorModule {
@@ -74,7 +76,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindSingleton("tray", Tray);
         injector.bindSingleton("viewStack", ViewStack);
         injector.bind("mediaDisplay", MediaDisplay);
-        injector.bindSingleton("changesCache", LocalStorageCache);
+        injector.bindSingleton("changesCache", MemoryCache);
         injector.bind("mediaHyperlinkProvider", MediaHyperlinkProvider);
         injector.bind("urlHyperlinkProvider", UrlHyperlinkProvider);
         injector.bind("gridEditor", GridEditor);
@@ -100,7 +102,8 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bind("roleSelector", RoleSelector);
         injector.bind("roleInput", RoleInput);
         injector.bind("spinner", Spinner);
-        injector.bindSingleton("mediaPermalinkResolver", MediaPermalinkResolver);
+        injector.bindModule(new MapDesignModule());
+        injector.bindToCollection("permalinkResolvers", MediaPermalinkResolver, "mediaPermalinkResolver");
         injector.bindModule(new TextblockEditorModule());
         injector.bindModule(new PictureDesignModule());
         injector.bindModule(new ButtonEditorModule());
@@ -125,6 +128,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindModule(new CardEditorModule());
         injector.bindModule(new CollapsiblePanelEditorModule());
         injector.bindModule(new CarouselEditorModule());
+        // injector.bindModule(new DividerDesignModule());
         injector.bindToCollection("hyperlinkProviders", UrlHyperlinkProvider);
         injector.bindToCollection("autostart", HostBindingHandler);
         injector.bindToCollection("autostart", DraggablesBindingHandler);
@@ -133,6 +137,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindToCollection("autostart", Hinter);
         injector.bindInstance("reservedPermalinks", ["/", "/404", "/500"]);
         injector.resolve("workshopSections");
+
 
         const userService = new DesignerUserService();
         injector.bindInstance("userService", userService);
