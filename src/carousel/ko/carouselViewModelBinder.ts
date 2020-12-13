@@ -76,7 +76,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
             readonly: bindingContext ? bindingContext.readonly : false,
             model: model,
             draggable: true,
-            flow: "block",
+            flow: "flex",
             editor: "carousel-editor",
             handler: CarouselHandlers,
             applyChanges: async (changes) => {

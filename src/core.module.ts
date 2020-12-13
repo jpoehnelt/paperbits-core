@@ -40,7 +40,7 @@ import { TestimonialsModule } from "./testimonials/ko/testimonials.module";
 import { TextblockModule } from "./textblock/ko/textblock.module";
 import { VideoPlayerModule } from "./video-player/videoPlayer.publish.module";
 import { YoutubePlayerPublishModule } from "./youtube-player/youtubePlayer.publish.module";
-import { CarouselModule } from "./carousel/carousel.design.module";
+import { CarouselDesignModule } from "./carousel/carousel.design.module";
 
 
 /**
@@ -103,7 +103,7 @@ export class CoreModule implements IInjectorModule {
         injector.bindModule(new TestimonialsModule());
         injector.bindModule(new CardModule());
         injector.bindModule(new CollapsiblePanelModule());
-        injector.bindModule(new CarouselModule());
+        injector.bindModule(new CarouselDesignModule());
 
         injector.bindToCollection("routeGuards", DefaultRouteGuard);
         injector.bindToCollection("autostart", WidgetBindingHandler);
