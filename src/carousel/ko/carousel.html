@@ -6,7 +6,7 @@
     </ol>
 
     <!-- ko foreach: { data: carouselItems, as: 'carouselItem' } -->
-    <div class="carousel-item" data-bind="css: { active: carouselItem === $component.activeItem() }">
+    <div class="carousel-item" data-bind="css: { active: carouselItem === $component.activeItem() }, styled: carouselItem.styles">
         <!-- ko foreach: { data: carouselItem.widgets, as: 'widget' } -->
         <!-- ko widget: widget -->
         <!-- /ko -->

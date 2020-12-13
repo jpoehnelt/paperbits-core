@@ -2,11 +2,10 @@
 import * as ko from "knockout";
 import * as Utils from "@paperbits/common";
 import * as Objects from "@paperbits/common/objects";
-import template from "./carouselEditor.html";
+import template from "./carouselItemEditor.html";
 import { ViewManager } from "@paperbits/common/ui";
 import { Component, Param, Event, OnMounted } from "@paperbits/common/ko/decorators";
 import { CarouselModel } from "../carouselModel";
-import { GridModel } from "../../grid-layout-section";
 import {
     BackgroundStylePluginConfig,
     TypographyStylePluginConfig,
@@ -19,10 +18,10 @@ import { EventManager } from "@paperbits/common/events/eventManager";
 import { CommonEvents } from "@paperbits/common/events";
 
 @Component({
-    selector: "carousel-editor",
+    selector: "carousel-item-editor",
     template: template
 })
-export class CarouselEditor {
+export class CarouselItemEditor {
     public readonly stickTo: ko.Observable<string>;
     public readonly background: ko.Observable<BackgroundStylePluginConfig>;
     public readonly typography: ko.Observable<TypographyStylePluginConfig>;
@@ -30,8 +29,6 @@ export class CarouselEditor {
     public readonly sizeConfig: ko.Observable<SizeStylePluginConfig>;
     public readonly stretch: ko.Observable<boolean>;
 
-
-    private gridModel: GridModel;
 
     constructor(
         private readonly viewManager: ViewManager,
@@ -86,8 +83,6 @@ export class CarouselEditor {
             this.stretch(!!stretchStyle);
         }
 
-        // this.gridModel = <GridModel>this.model.widgets[0];
-        // const gridStyles = this.gridModel.styles;
         const containerSizeStyles = Objects.getObjectAt<SizeStylePluginConfig>(`instance/size/${viewport}`, this.model.styles);
         const marginStyles = Objects.getObjectAt<MarginStylePluginConfig>(`instance/margin/${viewport}`, this.model.styles);
 

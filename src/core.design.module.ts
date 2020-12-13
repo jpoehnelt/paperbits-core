@@ -58,9 +58,9 @@ import { ContentEditorModule } from "./content/ko";
 import { ViewStack } from "./ko/ui/viewStack";
 import { MediaDisplay } from "./workshops/media/ko/mediaDisplay";
 import { Lightbox } from "./workshops/media/ko/lightbox";
-import { CarouselEditorModule } from "./carousel/ko/carouselEditor.module";
 import { MapDesignModule } from "./map/ko/map.design.module";
 import { MemoryCache } from "@paperbits/common/caching";
+import { CarouselDesignModule } from "./carousel/ko";
 // import { DividerDesignModule } from "./divider/divider.design.module";
 
 
@@ -127,7 +127,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindModule(new ContentEditorModule());
         injector.bindModule(new CardEditorModule());
         injector.bindModule(new CollapsiblePanelEditorModule());
-        injector.bindModule(new CarouselEditorModule());
+        injector.bindModule(new CarouselDesignModule());
         // injector.bindModule(new DividerDesignModule());
         injector.bindToCollection("hyperlinkProviders", UrlHyperlinkProvider);
         injector.bindToCollection("autostart", HostBindingHandler);

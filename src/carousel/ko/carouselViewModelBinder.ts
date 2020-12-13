@@ -9,6 +9,7 @@ import { EventManager } from "@paperbits/common/events";
 import { StyleCompiler } from "@paperbits/common/styles";
 import { Bag } from "@paperbits/common";
 import { CarouselItemViewModel } from "./carouselItemViewModel";
+import { CarouselItemHandlers } from "../carouselItemHandlers";
 
 
 export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, CarouselViewModel> {
@@ -41,6 +42,23 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
         if (model.styles) {
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
         }
+
+        const binding: IWidgetBinding<CarouselItemModel> = {
+            name: "carousel-item",
+            displayName: "Carousel item",
+            readonly: bindingContext ? bindingContext.readonly : false,
+            model: model,
+            draggable: true,
+            flow: "flex",
+            editor: "carousel-item-editor",
+            handler: CarouselItemHandlers,
+            applyChanges: async (changes) => {
+                await this.itemModelToViewModel(model, viewModel, bindingContext);
+                this.eventManager.dispatchEvent("onContentUpdate");
+            }
+        };
+
+        viewModel["widgetBinding"] = binding;
 
         return viewModel;
     }
