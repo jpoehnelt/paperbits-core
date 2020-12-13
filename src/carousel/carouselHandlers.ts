@@ -74,36 +74,6 @@ export class CarouselHandlers {
             }]
         };
 
-        console.log("FORGET ME NOT!");
-        if (context.model["carouselItems"][0].widgets.length !== 0) {
-            return carouselContextualEditor;
-        }
-
-        carouselContextualEditor.hoverCommands.push({
-            color: "#607d8b",
-            position: "center",
-            tooltip: "Add widget",
-            component: {
-                name: "grid-layout-selector",
-                params: {
-                    onSelect: (section: SectionModel) => {
-                        const sectionHalf = context.half;
-
-                        let index = context.parentModel.widgets.indexOf(context.model);
-
-                        if (sectionHalf === "bottom") {
-                            index++;
-                        }
-
-                        context.parentModel.widgets.splice(index, 0, section);
-                        context.parentBinding.applyChanges();
-
-                        this.viewManager.clearContextualEditors();
-                        this.eventManager.dispatchEvent("onContentUpdate");
-                    }
-                }
-            }
-        });
 
         return carouselContextualEditor;
     }

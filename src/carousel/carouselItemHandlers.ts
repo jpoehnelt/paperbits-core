@@ -71,23 +71,23 @@ export class CarouselItemHandlers {
             }]
         };
 
-        contextualEditor.hoverCommands.push({
-            color: "#607d8b",
-            position: "center",
-            tooltip: "Add slide layout",
-            component: {
-                name: "grid-layout-selector",
-                params: {
-                    onSelect: (section: SectionModel) => {
-                        context.model.widgets = section.widgets;
-                        context.binding.applyChanges();
+            contextualEditor.hoverCommands.push({
+                color: "#607d8b",
+                position: "center",
+                tooltip: "Add slide layout",
+                component: {
+                    name: "grid-layout-selector",
+                    params: {
+                        onSelect: (section: SectionModel) => {
+                            context.model.widgets = section.widgets;
+                            context.binding.applyChanges();
 
-                        this.viewManager.clearContextualEditors();
-                        this.eventManager.dispatchEvent("onContentUpdate");
+                            this.viewManager.clearContextualEditors();
+                            this.eventManager.dispatchEvent("onContentUpdate");
+                        }
                     }
                 }
-            }
-        });
+            });
 
         return contextualEditor;
     }
