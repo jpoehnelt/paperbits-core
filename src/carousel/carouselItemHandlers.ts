@@ -21,7 +21,7 @@ export class CarouselItemHandlers {
             hoverCommands: [{
                 position: context.half,
                 tooltip: "Add carousel",
-                color: "#2b87da",
+                color: "#607d8b",
                 component: {
                     name: "grid-layout-selector",
                     params: {
@@ -44,10 +44,10 @@ export class CarouselItemHandlers {
                 }
             }],
             deleteCommand: {
-                tooltip: "Delete carousel",
-                color: "#2b87da",
+                tooltip: "Delete slide",
+                color: "#607d8b",
                 callback: () => {
-                    context.parentModel.widgets.remove(context.model);
+                    context.parentModel["carouselItems"].remove(context.model);
                     context.parentBinding.applyChanges();
                     this.viewManager.clearContextualEditors();
                     this.eventManager.dispatchEvent("onContentUpdate");
@@ -57,14 +57,14 @@ export class CarouselItemHandlers {
                 tooltip: "Edit carousel slide",
                 iconClass: "paperbits-edit-72",
                 position: "top right",
-                color: "#2b87da",
+                color: "#607d8b",
                 callback: () => this.viewManager.openWidgetEditor(context.binding)
             },
             {
                 tooltip: "Switch to parent",
                 iconClass: "paperbits-enlarge-vertical",
                 position: "top right",
-                color: "#9C27B0",
+                color: "#607d8b",
                 callback: () => {
                     context.switchToParent(CarouselModel);
                 }
@@ -74,7 +74,7 @@ export class CarouselItemHandlers {
         contextualEditor.hoverCommands.push({
             color: "#607d8b",
             position: "center",
-            tooltip: "Add layout",
+            tooltip: "Add slide layout",
             component: {
                 name: "grid-layout-selector",
                 params: {

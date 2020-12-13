@@ -1,7 +1,7 @@
 import { IContextCommandSet, View, ViewManager } from "@paperbits/common/ui";
 import { DragSession } from "@paperbits/common/ui/draggables";
 import { WidgetContext } from "@paperbits/common/editing";
-import { CarouselModel } from "./carouselModel";
+import { CarouselItemModel, CarouselModel } from "./carouselModel";
 import { RowModel } from "../row/rowModel";
 import { EventManager } from "@paperbits/common/events";
 import { BlockType } from "@paperbits/common/blocks";
@@ -61,24 +61,15 @@ export class CarouselHandlers {
                 callback: () => this.viewManager.openWidgetEditor(context.binding)
             },
             {
-                tooltip: "Add to library",
+                tooltip: "Add slide",
                 iconClass: "paperbits-simple-add",
                 position: "top right",
                 color: "#2b87da",
                 callback: () => {
-                    const view: View = {
-                        heading: "Add to library",
-                        component: {
-                            name: "add-block-dialog",
-                            params: {
-                                blockModel: context.model,
-                                blockType: BlockType.saved
-                            }
-                        },
-                        resize: "vertically horizontally"
-                    };
-
-                    this.viewManager.openViewAsPopup(view);
+                    context.model["carouselItems"].push(new CarouselItemModel());
+                    context.parentBinding.applyChanges();
+                    this.viewManager.clearContextualEditors();
+                    this.eventManager.dispatchEvent("onContentUpdate");
                 }
             }]
         };
