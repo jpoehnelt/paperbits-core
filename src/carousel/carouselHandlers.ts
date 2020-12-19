@@ -62,7 +62,7 @@ export class CarouselHandlers {
             },
             {
                 tooltip: "Add slide",
-                iconClass: "paperbits-simple-add",
+                iconClass: "paperbits-circle-add",
                 position: "top right",
                 color: "#2b87da",
                 callback: () => {

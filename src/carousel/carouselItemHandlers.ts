@@ -1,11 +1,7 @@
 import { IContextCommandSet, View, ViewManager } from "@paperbits/common/ui";
-import { DragSession } from "@paperbits/common/ui/draggables";
 import { WidgetContext } from "@paperbits/common/editing";
 import { CarouselModel } from "./carouselModel";
-import { RowModel } from "../row/rowModel";
 import { EventManager } from "@paperbits/common/events";
-import { BlockType } from "@paperbits/common/blocks";
-import { WidgetModel } from "@paperbits/common/widgets";
 import { SectionModel } from "../section";
 
 
@@ -18,41 +14,8 @@ export class CarouselItemHandlers {
     public getContextualEditor(context: WidgetContext): IContextCommandSet {
         const contextualEditor: IContextCommandSet = {
             color: "#2b87da",
-            hoverCommands: [{
-                position: context.half,
-                tooltip: "Add carousel",
-                color: "#607d8b",
-                component: {
-                    name: "grid-layout-selector",
-                    params: {
-                        onSelect: (carousel: CarouselModel) => {
-                            const carouselHalf = context.half;
-
-                            let index = context.parentModel.widgets.indexOf(context.model);
-
-                            if (carouselHalf === "bottom") {
-                                index++;
-                            }
-
-                            context.parentModel.widgets.splice(index, 0, carousel);
-                            context.parentBinding.applyChanges();
-
-                            this.viewManager.clearContextualEditors();
-                            this.eventManager.dispatchEvent("onContentUpdate");
-                        }
-                    }
-                }
-            }],
-            deleteCommand: {
-                tooltip: "Delete slide",
-                color: "#607d8b",
-                callback: () => {
-                    context.parentModel["carouselItems"].remove(context.model);
-                    context.parentBinding.applyChanges();
-                    this.viewManager.clearContextualEditors();
-                    this.eventManager.dispatchEvent("onContentUpdate");
-                }
-            },
+            hoverCommands: [],
+            deleteCommand: null,
             selectCommands: [{
                 tooltip: "Edit carousel slide",
                 iconClass: "paperbits-edit-72",
@@ -71,6 +34,20 @@ export class CarouselItemHandlers {
             }]
         };
 
+        if (context.parentModel["carouselItems"].length > 1) {
+            contextualEditor.deleteCommand = {
+                tooltip: "Delete slide",
+                color: "#607d8b",
+                callback: () => {
+                    context.parentModel["carouselItems"].remove(context.model);
+                    context.parentBinding.applyChanges();
+                    this.viewManager.clearContextualEditors();
+                    this.eventManager.dispatchEvent("onContentUpdate");
+                }
+            };
+        }
+
+        if (context.model.widgets.length === 0) {
             contextualEditor.hoverCommands.push({
                 color: "#607d8b",
                 position: "center",
@@ -78,7 +55,8 @@ export class CarouselItemHandlers {
                 component: {
                     name: "grid-layout-selector",
                     params: {
-                        onSelect: (section: SectionModel) => {
+                        onSelect: (section: SectionModel) => { // TODO: Section should not be here
+                            console.log("Forget me not");
                             context.model.widgets = section.widgets;
                             context.binding.applyChanges();
 
@@ -88,6 +66,7 @@ export class CarouselItemHandlers {
                     }
                 }
             });
+        }
 
         return contextualEditor;
     }

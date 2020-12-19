@@ -19,7 +19,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
         private readonly styleCompiler: StyleCompiler
     ) { }
 
-    public async itemModelToViewModel(model: CarouselItemModel, viewModel?: CarouselItemViewModel, bindingContext?: Bag<any>): Promise<CarouselItemViewModel> {
+    public async itemModelToViewModel(model: CarouselItemModel, index: number, viewModel?: CarouselItemViewModel, bindingContext?: Bag<any>): Promise<CarouselItemViewModel> {
         if (!viewModel) {
             viewModel = new CarouselItemViewModel();
         }
@@ -34,7 +34,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
         }
 
         if (viewModels.length === 0) {
-            viewModels.push(<any>new PlaceholderViewModel("Slide"));
+            viewModels.push(<any>new PlaceholderViewModel(`Slide ${index + 1}`));
         }
 
         viewModel.widgets(viewModels);
@@ -45,7 +45,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
 
         const binding: IWidgetBinding<CarouselItemModel> = {
             name: "carousel-item",
-            displayName: "Carousel item",
+            displayName: `Slide ${index + 1}`,
             readonly: bindingContext ? bindingContext.readonly : false,
             model: model,
             draggable: true,
@@ -53,7 +53,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
             editor: "carousel-item-editor",
             handler: CarouselItemHandlers,
             applyChanges: async (changes) => {
-                await this.itemModelToViewModel(model, viewModel, bindingContext);
+                await this.itemModelToViewModel(model, index, viewModel, bindingContext);
                 this.eventManager.dispatchEvent("onContentUpdate");
             }
         };
@@ -70,8 +70,8 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
 
         const carouselItemViewModels = [];
 
-        for (const carouselItemModel of model.carouselItems) {
-            const carouselItemViewModel = await this.itemModelToViewModel(carouselItemModel, null, bindingContext);
+        for (const [index, carouselItemModel] of model.carouselItems.entries()) {
+            const carouselItemViewModel = await this.itemModelToViewModel(carouselItemModel, index, null, bindingContext);
             carouselItemViewModels.push(carouselItemViewModel);
         }
 
