@@ -9,48 +9,21 @@ export class CarouselHTMLElement extends HTMLElement {
     }
 
     static get observedAttributes(): string[] {
-        return ["params"];
+        return ["params"];  // Check auto sliding!
     }
 
     public attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
         // const element = <HTMLElement>this;
-        // const isBound = !!ko.contextFor(element);
-
-        // if (!isBound) {
-        //     return;
-        // }
-
-        // /*
-        //  * TODO: Update paramsObservable using name instead of re-connecting:
-        //  * paramsObservable[name](newValue);
-        //  */
-
-        // // Reinitialize bindings.
-        // this.disconnectedCallback();
-        // this.connectedCallback();
     }
 
     public connectedCallback(): void {
         const element = <HTMLElement>this;
-        // const carouselIndicators = coerce<HTMLDListElement>(element.querySelectorAll(".carousel-indicator"));
-
-        // carouselIndicators.forEach((indicator, index) => {
-        //     indicator.onclick = () => {
-        //         setActiveItem(index);
-        //     };
-        // });
-
-
-        // let activeIndicator = carouselIndicators[0];
-        // activeIndicator.classList.add("active");
 
         const setActiveItem = (index: number) => {
-            // const carouselIndicators = coerce<HTMLDListElement>(element.querySelectorAll(".carousel-indicator"));
-            // let activeIndicator = carouselIndicators[0];
-            // activeIndicator.classList.remove("active");
-            // activeIndicator = carouselIndicators[index];
-            // activeIndicator.classList.add("active");
-
+            const carouselIndicators = coerce<HTMLDListElement>(element.querySelectorAll(".carousel-indicator"));
+            const activeIndicator = element.querySelector(".carousel-indicator.active");
+            activeIndicator.classList.remove("active");
+            carouselIndicators[index].classList.add("active");
             this.style.setProperty("--slide", index.toString());
         };
 
