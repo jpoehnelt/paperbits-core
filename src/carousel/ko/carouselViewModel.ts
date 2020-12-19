@@ -12,11 +12,13 @@ export class CarouselViewModel {
     public styles: ko.Observable<StyleModel>;
     public carouselItems: ko.ObservableArray<CarouselItemViewModel>;
     public activeItem: ko.Observable<CarouselItemViewModel>;
+    public currentSlideIndex: ko.Observable<number>;
 
     constructor() {
         this.carouselItems = ko.observableArray<CarouselItemViewModel>();
         this.activeItem = ko.observable();
         this.styles = ko.observable<StyleModel>();
+        this.currentSlideIndex = ko.observable(0);
     }
 
     public prev(): void {
