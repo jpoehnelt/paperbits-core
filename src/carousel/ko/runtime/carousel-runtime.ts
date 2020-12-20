@@ -5,27 +5,48 @@ export class CarouselHTMLElement extends HTMLElement {
 
     constructor() {
         super();
-        this.currentSlideIndex = 0;
+        const activeSlideAttr = this.getAttribute("data-active-slide");
+
+        this.currentSlideIndex = !!activeSlideAttr
+            ? parseInt(activeSlideAttr)
+            : 0;
     }
 
     static get observedAttributes(): string[] {
-        return ["params"];  // Check auto sliding!
+        return ["data-active-slide"];  // Check auto sliding!
     }
 
     public attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
-        // const element = <HTMLElement>this;
+        if (name !== "data-active-slide") {
+            return;
+        }
+
+        if (!newValue || oldValue === newValue) {
+            return;
+        }
+
+        this.currentSlideIndex = parseInt(newValue);
+        this.setActiveItem(this.currentSlideIndex);
     }
+
+    private setActiveItem = (index: number) => {
+        this.style.setProperty("--slide", index.toString());
+
+
+        const activeIndicator = this.querySelector(".carousel-indicator.active");
+
+        if (activeIndicator) {
+            activeIndicator.classList.remove("active");
+        }
+
+        setImmediate(() => {
+            const carouselIndicators = coerce<HTMLDListElement>(this.querySelectorAll(".carousel-indicator"));
+            carouselIndicators[index].classList.add("active");
+        });
+    };
 
     public connectedCallback(): void {
         const element = <HTMLElement>this;
-
-        const setActiveItem = (index: number) => {
-            const carouselIndicators = coerce<HTMLDListElement>(element.querySelectorAll(".carousel-indicator"));
-            const activeIndicator = element.querySelector(".carousel-indicator.active");
-            activeIndicator.classList.remove("active");
-            carouselIndicators[index].classList.add("active");
-            this.style.setProperty("--slide", index.toString());
-        };
 
         const prev = (): void => {
             const carouselItems = coerce<Element>(element.querySelectorAll(".carousel-item"));
@@ -35,7 +56,7 @@ export class CarouselHTMLElement extends HTMLElement {
                 this.currentSlideIndex = carouselItems.length - 1;
             }
 
-            setActiveItem(this.currentSlideIndex);
+            this.setActiveItem(this.currentSlideIndex);
         };
 
         const next = (): void => {
@@ -46,7 +67,7 @@ export class CarouselHTMLElement extends HTMLElement {
                 this.currentSlideIndex = 0;
             }
 
-            setActiveItem(this.currentSlideIndex);
+            this.setActiveItem(this.currentSlideIndex);
         };
 
         const prevButton = element.querySelector<HTMLButtonElement>(".carousel-control-prev");
@@ -54,9 +75,5 @@ export class CarouselHTMLElement extends HTMLElement {
 
         const nextButton = element.querySelector<HTMLButtonElement>(".carousel-control-next");
         nextButton.onclick = next;
-    }
-
-    public disconnectedCallback(): void {
-        //
     }
 }

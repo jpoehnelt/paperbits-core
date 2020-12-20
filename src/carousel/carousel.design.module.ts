@@ -1,5 +1,5 @@
 import { IInjectorModule, IInjector } from "@paperbits/common/injection";
-import { CarouselViewModel } from "./ko/carouselViewModel";
+import { CarouselViewModel } from "./ko/carousel";
 import { CarouselModelBinder } from "./carouselModelBinder";
 import { CarouselViewModelBinder } from "./ko/carouselViewModelBinder";
 import { IWidgetHandler } from "@paperbits/common/editing";

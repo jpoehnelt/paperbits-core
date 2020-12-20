@@ -1,4 +1,4 @@
-import { CarouselViewModel } from "./carouselViewModel";
+import { CarouselViewModel } from "./carousel";
 import { ViewModelBinder } from "@paperbits/common/widgets";
 import { IWidgetBinding } from "@paperbits/common/editing";
 import { CarouselItemModel, CarouselModel } from "../carouselModel";
@@ -78,11 +78,10 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
         if (carouselItemViewModels.length === 0) {
             carouselItemViewModels.push(<any>new PlaceholderViewModel("Carousel"));
         }
-        else {
-            viewModel.activeItem(carouselItemViewModels[0]);
-        }
 
         viewModel.carouselItems(carouselItemViewModels);
+        viewModel.activeItemIndex(null);
+        viewModel.activeItemIndex(0);
 
         if (model.styles) {
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
@@ -94,7 +93,7 @@ export class CarouselViewModelBinder implements ViewModelBinder<CarouselModel, C
             readonly: bindingContext ? bindingContext.readonly : false,
             model: model,
             draggable: true,
-            flow: "flex",
+            flow: "block",
             editor: "carousel-editor",
             handler: CarouselHandlers,
             applyChanges: async (changes) => {

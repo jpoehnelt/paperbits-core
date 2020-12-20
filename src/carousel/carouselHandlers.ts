@@ -1,6 +1,6 @@
 import { IContextCommandSet, View, ViewManager } from "@paperbits/common/ui";
 import { DragSession } from "@paperbits/common/ui/draggables";
-import { WidgetContext } from "@paperbits/common/editing";
+import { IWidgetOrder, WidgetContext } from "@paperbits/common/editing";
 import { CarouselItemModel, CarouselModel } from "./carouselModel";
 import { RowModel } from "../row/rowModel";
 import { EventManager } from "@paperbits/common/events";
@@ -14,6 +14,24 @@ export class CarouselHandlers {
         private readonly viewManager: ViewManager,
         private readonly eventManager: EventManager
     ) { }
+
+    public async getWidgetOrder(): Promise<IWidgetOrder> {
+        const widgetOrder: IWidgetOrder = {
+            name: "carousel",
+            displayName: "Carousel",
+            iconClass: "paperbits-slider",
+            requires: [],
+            createModel: async () => {
+                const model = new CarouselModel();
+
+                model.carouselItems.push(new CarouselItemModel());
+
+                return model;
+            }
+        };
+
+        return widgetOrder;
+    }
 
     public getContextualEditor(context: WidgetContext): IContextCommandSet {
         const carouselContextualEditor: IContextCommandSet = {
