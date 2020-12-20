@@ -54,13 +54,6 @@ export class CarouselHandlers {
                 }
             },
             selectCommands: [{
-                tooltip: "Edit carousel",
-                iconClass: "paperbits-edit-72",
-                position: "top right",
-                color: "#2b87da",
-                callback: () => this.viewManager.openWidgetEditor(context.binding)
-            },
-            {
                 tooltip: "Add slide",
                 iconClass: "paperbits-circle-add",
                 position: "top right",
@@ -71,6 +64,13 @@ export class CarouselHandlers {
                     this.viewManager.clearContextualEditors();
                     this.eventManager.dispatchEvent("onContentUpdate");
                 }
+            },
+            {
+                tooltip: "Edit carousel",
+                iconClass: "paperbits-edit-72",
+                position: "top right",
+                color: "#2b87da",
+                callback: () => this.viewManager.openWidgetEditor(context.binding)
             }]
         };
 
