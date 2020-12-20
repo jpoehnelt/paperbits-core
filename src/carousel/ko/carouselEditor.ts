@@ -75,15 +75,6 @@ export class CarouselEditor {
                     this.typography(carouselStyles.typography);
                 }
             }
-
-            const stickToStyles = Objects.getObjectAt<string>(`instance/stickTo/${viewport}`, this.model.styles);
-
-            if (stickToStyles) {
-                this.stickTo(stickToStyles);
-            }
-
-            const stretchStyle = Objects.getObjectAt(`instance/size/${viewport}/stretch`, this.model.styles);
-            this.stretch(!!stretchStyle);
         }
 
         // this.gridModel = <GridModel>this.model.widgets[0];
@@ -119,6 +110,8 @@ export class CarouselEditor {
         Objects.setValue(`instance/size/${viewport}/stretch`, this.model.styles, this.stretch());
 
         this.onChange(this.model);
+
+        console.log(this.model.styles.instance);
     }
 
     public onBackgroundUpdate(background: BackgroundStylePluginConfig): void {

@@ -22,6 +22,26 @@ export class CarouselHandlers {
                 model.carouselItems.push(new CarouselItemModel());
                 model.carouselItems.push(new CarouselItemModel());
 
+                model.styles.instance = {
+                    size: {
+                        xl: {
+                            minHeight: 300
+                        },
+                        lg: {
+                            minHeight: 300
+                        },
+                        md: {
+                            minHeight: 300
+                        },
+                        sm: {
+                            minHeight: 300
+                        },
+                        xs: {
+                            minHeight: 300
+                        }
+                    }
+                };
+
                 return model;
             }
         };

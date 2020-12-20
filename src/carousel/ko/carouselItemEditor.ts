@@ -59,10 +59,12 @@ export class CarouselItemEditor {
         }
 
         this.gridModel = <GridModel>this.model.widgets[0];
-        const gridStyles = this.gridModel.styles;
-        const containerSizeStyles = Objects.getObjectAt<SizeStylePluginConfig>(`instance/size/${viewport}`, gridStyles);
+        const gridStyles = this.gridModel?.styles;
 
-        this.sizeConfig(containerSizeStyles);
+        if (gridStyles) {
+            const containerSizeStyles = Objects.getObjectAt<SizeStylePluginConfig>(`instance/size/${viewport}`, gridStyles);
+            this.sizeConfig(containerSizeStyles);
+        }
     }
 
     private applyChanges(): void {

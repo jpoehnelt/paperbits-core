@@ -51,10 +51,11 @@ export class CarouselItemHandlers {
             contextualEditor.hoverCommands.push({
                 color: "#607d8b",
                 position: "center",
-                tooltip: "Add slide layout",
+                tooltip: "Set slide layout",
                 component: {
                     name: "grid-layout-selector",
                     params: {
+                        heading: "Set slide layout",
                         onSelect: (section: SectionModel) => { // TODO: Section should not be here
                             console.log("Forget me not");
                             context.model.widgets = section.widgets;
