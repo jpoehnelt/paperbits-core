@@ -103,7 +103,6 @@ export class CoreModule implements IInjectorModule {
         injector.bindModule(new TestimonialsModule());
         injector.bindModule(new CardModule());
         injector.bindModule(new CollapsiblePanelModule());
-        injector.bindModule(new CarouselDesignModule());
 
         injector.bindToCollection("routeGuards", DefaultRouteGuard);
         injector.bindToCollection("autostart", WidgetBindingHandler);

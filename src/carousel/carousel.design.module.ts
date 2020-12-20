@@ -3,7 +3,7 @@ import { CarouselViewModel } from "./ko/carousel";
 import { CarouselModelBinder } from "./carouselModelBinder";
 import { CarouselViewModelBinder } from "./ko/carouselViewModelBinder";
 import { IWidgetHandler } from "@paperbits/common/editing";
-import { CarouselHandlers } from ".";
+import { CarouselHandlers } from "./carouselHandlers";
 import { CarouselItemHandlers } from "./carouselItemHandlers";
 import { CarouselEditor } from "./ko";
 import { CarouselItemEditor } from "./ko/carouselItemEditor";
