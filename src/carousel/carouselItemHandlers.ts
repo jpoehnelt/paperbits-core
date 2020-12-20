@@ -29,7 +29,7 @@ export class CarouselItemHandlers {
                 position: "top right",
                 color: "#607d8b",
                 callback: () => {
-                    context.switchToParent(CarouselModel);
+                    context.switchToParent();
                 }
             }]
         };
