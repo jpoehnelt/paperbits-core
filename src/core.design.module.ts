@@ -61,6 +61,7 @@ import { Lightbox } from "./workshops/media/ko/lightbox";
 import { MapDesignModule } from "./map/ko/map.design.module";
 import { MemoryCache } from "@paperbits/common/caching";
 import { CarouselDesignModule } from "./carousel/ko";
+import { TabsDesignModule } from "./tabs/ko";
 // import { DividerDesignModule } from "./divider/divider.design.module";
 
 
@@ -128,6 +129,7 @@ export class CoreDesignModule implements IInjectorModule {
         injector.bindModule(new CardEditorModule());
         injector.bindModule(new CollapsiblePanelEditorModule());
         injector.bindModule(new CarouselDesignModule());
+        injector.bindModule(new TabsDesignModule());
         // injector.bindModule(new DividerDesignModule());
         injector.bindToCollection("hyperlinkProviders", UrlHyperlinkProvider);
         injector.bindToCollection("autostart", HostBindingHandler);
