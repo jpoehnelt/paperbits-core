@@ -13,7 +13,7 @@ export class TabsHTMLElement extends HTMLElement {
     }
 
     static get observedAttributes(): string[] {
-        return ["data-active-tab"];  // Check auto sliding!
+        return ["data-tab"];  // Check auto sliding!
     }
 
     public attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
@@ -31,8 +31,6 @@ export class TabsHTMLElement extends HTMLElement {
 
     private setActiveItem = (index: number) => {
         this.style.setProperty("--tab", index.toString());
-
-
         const activeIndicator = this.querySelector(".tabs-indicator.active");
 
         if (activeIndicator) {
@@ -48,32 +46,43 @@ export class TabsHTMLElement extends HTMLElement {
     public connectedCallback(): void {
         const element = <HTMLElement>this;
 
-        const prev = (): void => {
-            const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
-            this.currentTabIndex--;
+        setTimeout(() => {
+            const tabs = coerce<HTMLAnchorElement>(element.querySelectorAll("[data-tab]"));
 
-            if (this.currentTabIndex < 0) {
-                this.currentTabIndex = tabsItems.length - 1;
-            }
+            tabs.forEach((tab, index) => {
+                tab.onclick = () => {
+                    this.setActiveItem(index);
+                };
+            });
+        }, 10);
 
-            this.setActiveItem(this.currentTabIndex);
-        };
 
-        const next = (): void => {
-            const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
-            this.currentTabIndex++;
+        // const prev = (): void => {
+        //     const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
+        //     this.currentTabIndex--;
 
-            if (this.currentTabIndex >= tabsItems.length) {
-                this.currentTabIndex = 0;
-            }
+        //     if (this.currentTabIndex < 0) {
+        //         this.currentTabIndex = tabsItems.length - 1;
+        //     }
 
-            this.setActiveItem(this.currentTabIndex);
-        };
+        //     this.setActiveItem(this.currentTabIndex);
+        // };
 
-        const prevButton = element.querySelector<HTMLButtonElement>(".tabs-control-prev");
-        prevButton.onclick = prev;
+        // const next = (): void => {
+        //     const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
+        //     this.currentTabIndex++;
 
-        const nextButton = element.querySelector<HTMLButtonElement>(".tabs-control-next");
-        nextButton.onclick = next;
+        //     if (this.currentTabIndex >= tabsItems.length) {
+        //         this.currentTabIndex = 0;
+        //     }
+
+        //     this.setActiveItem(this.currentTabIndex);
+        // };
+
+        // const prevButton = element.querySelector<HTMLButtonElement>(".tabs-control-prev");
+        // prevButton.onclick = prev;
+
+        // const nextButton = element.querySelector<HTMLButtonElement>(".tabs-control-next");
+        // nextButton.onclick = next;
     }
 }

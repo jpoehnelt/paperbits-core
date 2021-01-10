@@ -1,10 +1,12 @@
 <tabs-runtime class="tabs" data-bind="styled: styles, attr: { 'data-active-tab': activeItemIndex }">
     <div class="tabs-nav-items">
-
+        <!-- ko foreach: { data: tabsItems, as: 'tabsItem' } -->
+        <a href="#" data-bind="attr: { 'data-tab': $index }" data-tab="$index">Tab1</a>
+        <!-- /ko -->
     </div>
     <div class="tabs-items">
         <!-- ko foreach: { data: tabsItems, as: 'tabsItem' } -->
-        <div class="tabs-item" data-bind="styled: tabsItem.styles">
+        <div class="tab-content" data-bind="styled: tabsItem.styles">
             <!-- ko foreach: { data: tabsItem.widgets, as: 'widget' } -->
             <!-- ko widget: widget -->
             <!-- /ko -->
@@ -12,26 +14,4 @@
         </div>
         <!-- /ko -->
     </div>
-
-    <button class="tabs-control-prev">
-        <span class="tabs-control-prev-icon">
-            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
-            </svg>
-        </span>
-    </button>
-    <button class="tabs-control-next">
-        <span class="tabs-control-next-icon">
-            <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                    d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z">
-                </path>
-            </svg>
-        </span>
-    </button>
-
-    <ol class="tabs-indicators" data-bind="foreach: { data: tabsItems, as: 'tabsItem' }">
-        <li class="tabs-indicator"></li>
-    </ol>
 </tabs-runtime>
