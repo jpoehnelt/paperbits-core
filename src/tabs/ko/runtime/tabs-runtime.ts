@@ -31,15 +31,16 @@ export class TabsHTMLElement extends HTMLElement {
 
     private setActiveItem = (index: number) => {
         this.style.setProperty("--tab", index.toString());
-        const activeIndicator = this.querySelector(".tabs-indicator.active");
+        const activeTab = this.querySelector(".tabs-items .tab-content.active");
 
-        if (activeIndicator) {
-            activeIndicator.classList.remove("active");
+        if (activeTab) {
+            activeTab.classList.remove("active");
         }
 
+
         setImmediate(() => {
-            const tabsIndicators = coerce<HTMLDListElement>(this.querySelectorAll(".tabs-indicator"));
-            tabsIndicators[index].classList.add("active");
+            const tabs = coerce<HTMLDListElement>(this.querySelectorAll(".tabs-items .tab-content"));
+            tabs[index].classList.add("active");
         });
     };
 
@@ -50,12 +51,17 @@ export class TabsHTMLElement extends HTMLElement {
             const tabs = coerce<HTMLAnchorElement>(element.querySelectorAll("[data-tab]"));
 
             tabs.forEach((tab, index) => {
-                tab.onclick = () => {
+                tab.onclick = (event) => {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
                     this.setActiveItem(index);
                 };
             });
+
+            this.setActiveItem(0);
         }, 10);
 
+        
 
         // const prev = (): void => {
         //     const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
