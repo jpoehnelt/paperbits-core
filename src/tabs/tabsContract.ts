@@ -7,5 +7,6 @@ export interface TabsContract {
 }
 
 export interface TabsItemContract extends Contract {
+    label: string;
     styles?: any;
 }

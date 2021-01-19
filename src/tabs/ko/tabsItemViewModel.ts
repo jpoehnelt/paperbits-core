@@ -4,11 +4,13 @@ import { WidgetViewModel } from "../../ko/widgetViewModel";
 
 
 export class TabsItemViewModel {
-    public styles: ko.Observable<StyleModel>;
-    public widgets: ko.ObservableArray<WidgetViewModel>;
+    public readonly styles: ko.Observable<StyleModel>;
+    public readonly widgets: ko.ObservableArray<WidgetViewModel>;
+    public readonly label: ko.Observable<string>;
 
     constructor() {
         this.widgets = ko.observableArray();
         this.styles = ko.observable<StyleModel>();
+        this.label = ko.observable<string>("Tab");
     }
 }

@@ -7,7 +7,7 @@ import { Contract, Bag } from "@paperbits/common";
 
 export class TabsModelBinder implements IModelBinder<TabsModel> {
     public canHandleContract(contract: Contract): boolean {
-        return contract.type === "tabs";
+        return contract.type === "tab-panel";
     }
 
     public canHandleModel(model: Object): boolean {
@@ -23,6 +23,7 @@ export class TabsModelBinder implements IModelBinder<TabsModel> {
 
         contract.nodes = contract.nodes || [];
         model.styles = contract.styles || {};
+        model.label = contract.label;
 
         const modelPromises = contract.nodes.map(async (contract: Contract) => {
             const modelBinder = this.modelBinderSelector.getModelBinderByContract<any>(contract);
@@ -40,7 +41,7 @@ export class TabsModelBinder implements IModelBinder<TabsModel> {
         contract.tabsItems = contract.tabsItems || [];
         model.styles = contract.styles || {};
 
-        const modelPromises = contract.tabsItems.map(async (contract: Contract) => {
+        const modelPromises = contract.tabsItems.map(async (contract: TabsItemContract) => {
             return await this.contractItemToModel(contract, bindingContext);
         });
 
@@ -53,6 +54,7 @@ export class TabsModelBinder implements IModelBinder<TabsModel> {
         const tabsContract: TabsItemContract = {
             type: "tabs-item",
             styles: tabsItemModel.styles,
+            label: tabsItemModel.label,
             nodes: []
         };
 
@@ -66,7 +68,7 @@ export class TabsModelBinder implements IModelBinder<TabsModel> {
 
     public modelToContract(tabsModel: TabsModel): TabsContract {
         const tabsContract: TabsContract = {
-            type: "tabs",
+            type: "tab-panel",
             styles: tabsModel.styles,
             tabsItems: []
         };

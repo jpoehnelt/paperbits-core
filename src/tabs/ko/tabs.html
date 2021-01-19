@@ -1,17 +1,17 @@
-<tabs-runtime class="tabs" data-bind="styled: styles, attr: { 'data-active-tab': activeItemIndex }">
-    <div class="tabs-nav-items">
-        <!-- ko foreach: { data: tabsItems, as: 'tabsItem' } -->
-        <a href="#" data-bind="attr: { 'data-tab': $index }" data-tab="$index">Tab1</a>
+<tabs-runtime class="tab-panel" data-bind="styled: styles, attr: { 'data-active-tab': activeItemIndex }">
+    <ul class="nav nav-tabs">
+        <!-- ko foreach: { data: tabLinks, as: 'tabLink' } -->
+        <li class="nav-item">
+            <a href="#" class="nav-link" data-bind="attr: { 'data-tab': $index }, text: tabLink" data-tab="$index"></a>
+        </li>
+        <!-- /ko -->
+    </ul>
+    <!-- ko foreach: { data: tabsItems, as: 'tabsItem' } -->
+    <div class="tab-content" data-bind="styled: tabsItem.styles">
+        <!-- ko foreach: { data: tabsItem.widgets, as: 'widget' } -->
+        <!-- ko widget: widget -->
+        <!-- /ko -->
         <!-- /ko -->
     </div>
-    <div class="tabs-items">
-        <!-- ko foreach: { data: tabsItems, as: 'tabsItem' } -->
-        <div class="tab-content" data-bind="styled: tabsItem.styles">
-            <!-- ko foreach: { data: tabsItem.widgets, as: 'widget' } -->
-            <!-- ko widget: widget -->
-            <!-- /ko -->
-            <!-- /ko -->
-        </div>
-        <!-- /ko -->
-    </div>
+    <!-- /ko -->
 </tabs-runtime>

@@ -33,11 +33,14 @@ export class TabsViewModelBinder implements ViewModelBinder<TabsModel, TabsViewM
             viewModels.push(widgetViewModel);
         }
 
+        const defaultLabel = `Tab ${index + 1}`;
+
         if (viewModels.length === 0) {
-            viewModels.push(<any>new PlaceholderViewModel(`Tab ${index + 1}`));
+            viewModels.push(<any>new PlaceholderViewModel(defaultLabel));
         }
 
         viewModel.widgets(viewModels);
+        viewModel.label(model.label || defaultLabel);
 
         if (model.styles) {
             viewModel.styles(await this.styleCompiler.getStyleModelAsync(model.styles, bindingContext?.styleManager));
@@ -45,7 +48,7 @@ export class TabsViewModelBinder implements ViewModelBinder<TabsModel, TabsViewM
 
         const binding: IWidgetBinding<TabsItemModel> = {
             name: "tabs-item",
-            displayName: `Tab ${index + 1}`,
+            displayName: defaultLabel,
             readonly: bindingContext ? bindingContext.readonly : false,
             model: model,
             draggable: true,
@@ -76,7 +79,7 @@ export class TabsViewModelBinder implements ViewModelBinder<TabsModel, TabsViewM
         }
 
         if (tabsItemViewModels.length === 0) {
-            tabsItemViewModels.push(<any>new PlaceholderViewModel("Tabs"));
+            tabsItemViewModels.push(<any>new PlaceholderViewModel("Tab panel"));
         }
 
         viewModel.tabsItems(tabsItemViewModels);
@@ -88,15 +91,14 @@ export class TabsViewModelBinder implements ViewModelBinder<TabsModel, TabsViewM
         }
 
         const binding: IWidgetBinding<TabsModel> = {
-            name: "tabs",
-            displayName: "Tabs",
+            name: "tab-panel",
+            displayName: "Tab panel",
             readonly: bindingContext ? bindingContext.readonly : false,
             model: model,
             draggable: true,
             flow: "block",
-            editor: "tabs-editor",
             handler: TabsHandlers,
-            applyChanges: async (changes) => {
+            applyChanges: async () => {
                 await this.modelToViewModel(model, viewModel, bindingContext);
                 this.eventManager.dispatchEvent("onContentUpdate");
             }

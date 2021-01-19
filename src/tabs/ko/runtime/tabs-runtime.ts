@@ -13,7 +13,7 @@ export class TabsHTMLElement extends HTMLElement {
     }
 
     static get observedAttributes(): string[] {
-        return ["data-tab"];  // Check auto sliding!
+        return ["data-tab"];
     }
 
     public attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
@@ -30,65 +30,50 @@ export class TabsHTMLElement extends HTMLElement {
     }
 
     private setActiveItem = (index: number) => {
-        this.style.setProperty("--tab", index.toString());
-        const activeTab = this.querySelector(".tabs-items .tab-content.active");
+        const activeTab = this.querySelector(".tab-content-active");
 
         if (activeTab) {
-            activeTab.classList.remove("active");
+            activeTab.classList.remove("tab-content-active");
+        }
+        
+        const activeLink = this.querySelector(".nav-tabs .nav-link.nav-link-active");
+
+        if (activeLink) {
+            activeLink.classList.remove("nav-link-active");
         }
 
-
         setImmediate(() => {
-            const tabs = coerce<HTMLDListElement>(this.querySelectorAll(".tabs-items .tab-content"));
-            tabs[index].classList.add("active");
+            const tabs = coerce<HTMLDListElement>(this.querySelectorAll(".tab-content"));
+            tabs[index].classList.add("tab-content-active");
+
+            const navLinks = coerce<HTMLDListElement>(this.querySelectorAll(".nav-tabs .nav-link"));
+            navLinks[index].classList.add("nav-link-active");
         });
     };
 
+    private onClick(event: MouseEvent): void {
+        const element = <HTMLElement>event.target;
+        const tabIndexIndex = element.getAttribute("data-tab");
+
+        if (!tabIndexIndex) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        
+        this.setActiveItem(parseInt(tabIndexIndex));
+    }
+
     public connectedCallback(): void {
-        const element = <HTMLElement>this;
+        this.addEventListener("click", this.onClick, true);
 
         setTimeout(() => {
-            const tabs = coerce<HTMLAnchorElement>(element.querySelectorAll("[data-tab]"));
-
-            tabs.forEach((tab, index) => {
-                tab.onclick = (event) => {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                    this.setActiveItem(index);
-                };
-            });
-
             this.setActiveItem(0);
         }, 10);
+    }
 
-        
-
-        // const prev = (): void => {
-        //     const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
-        //     this.currentTabIndex--;
-
-        //     if (this.currentTabIndex < 0) {
-        //         this.currentTabIndex = tabsItems.length - 1;
-        //     }
-
-        //     this.setActiveItem(this.currentTabIndex);
-        // };
-
-        // const next = (): void => {
-        //     const tabsItems = coerce<Element>(element.querySelectorAll(".tabs-item"));
-        //     this.currentTabIndex++;
-
-        //     if (this.currentTabIndex >= tabsItems.length) {
-        //         this.currentTabIndex = 0;
-        //     }
-
-        //     this.setActiveItem(this.currentTabIndex);
-        // };
-
-        // const prevButton = element.querySelector<HTMLButtonElement>(".tabs-control-prev");
-        // prevButton.onclick = prev;
-
-        // const nextButton = element.querySelector<HTMLButtonElement>(".tabs-control-next");
-        // nextButton.onclick = next;
+    public disconnectedCallback(): void {
+        this.removeEventListener("click", this.onClick, true);
     }
 }

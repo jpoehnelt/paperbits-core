@@ -14,9 +14,11 @@ export class TabsModel {
 export class TabsItemModel {
     public widgets: WidgetModel[];
     public styles: LocalStyles;
+    public label: string;
 
-    constructor() {
+    constructor(label: string = "Tab") {
         this.styles = {};
         this.widgets = [];
+        this.label = label;
     }
 }

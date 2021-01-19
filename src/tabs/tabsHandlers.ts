@@ -12,36 +12,15 @@ export class TabsHandlers {
 
     public async getWidgetOrder(): Promise<IWidgetOrder> {
         const widgetOrder: IWidgetOrder = {
-            name: "tabs",
-            displayName: "Tabs",
-            iconClass: "paperbits-tabr",
+            name: "tab-panel",
+            displayName: "Tab panel",
+            iconClass: "paperbits-puzzle-10",
             requires: [],
             createModel: async () => {
                 const model = new TabsModel();
-                model.tabsItems.push(new TabsItemModel());
-                model.tabsItems.push(new TabsItemModel());
-                model.tabsItems.push(new TabsItemModel());
-
-                model.styles.instance = {
-                    size: {
-                        xl: {
-                            minHeight: 300
-                        },
-                        lg: {
-                            minHeight: 300
-                        },
-                        md: {
-                            minHeight: 300
-                        },
-                        sm: {
-                            minHeight: 300
-                        },
-                        xs: {
-                            minHeight: 300
-                        }
-                    }
-                };
-
+                model.tabsItems.push(new TabsItemModel("Tab 1"));
+                model.tabsItems.push(new TabsItemModel("Tab 2"));
+                model.tabsItems.push(new TabsItemModel("Tab 3"));
                 return model;
             }
         };
@@ -54,7 +33,7 @@ export class TabsHandlers {
             color: "#2b87da",
             hoverCommands: null,
             deleteCommand: {
-                tooltip: "Delete tabs",
+                tooltip: "Delete tab panel",
                 color: "#607d8b",
                 callback: () => {
                     context.parentModel.widgets.remove(context.model);
@@ -75,13 +54,13 @@ export class TabsHandlers {
                     this.eventManager.dispatchEvent("onContentUpdate");
                 }
             },
-            {
-                tooltip: "Edit tabs",
-                iconClass: "paperbits-edit-72",
-                position: "top right",
-                color: "#607d8b",
-                callback: () => this.viewManager.openWidgetEditor(context.binding)
-            },
+            // {
+            //     tooltip: "Edit tabs",
+            //     iconClass: "paperbits-edit-72",
+            //     position: "top right",
+            //     color: "#607d8b",
+            //     callback: () => this.viewManager.openWidgetEditor(context.binding)
+            // },
             {
                 tooltip: "Switch to parent",
                 iconClass: "paperbits-enlarge-vertical",

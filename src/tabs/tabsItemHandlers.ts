@@ -16,7 +16,7 @@ export class TabsItemHandlers {
             hoverCommands: [],
             deleteCommand: null,
             selectCommands: [{
-                tooltip: "Edit tabs tab",
+                tooltip: "Edit tab",
                 iconClass: "paperbits-edit-72",
                 position: "top right",
                 color: "#607d8b",

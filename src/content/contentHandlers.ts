@@ -3,6 +3,8 @@ import { ViewManager, IContextCommandSet } from "@paperbits/common/ui";
 import { IWidgetHandler, WidgetContext } from "@paperbits/common/editing";
 import { WidgetModel } from "@paperbits/common/widgets";
 import { GridCellModel } from "../grid-cell";
+import { StyleHelper } from "@paperbits/styles";
+import { Style } from "@paperbits/common/styles";
 
 
 export class ContentHandlers implements IWidgetHandler {

@@ -25,6 +25,7 @@ import { GridModel } from "../../grid-layout-section";
 export class TabsItemEditor {
     public readonly background: ko.Observable<BackgroundStylePluginConfig>;
     public readonly sizeConfig: ko.Observable<SizeStylePluginConfig>;
+    public readonly tabLabel: ko.Observable<string>;
 
     private gridModel: GridModel;
 
@@ -34,6 +35,7 @@ export class TabsItemEditor {
     ) {
         this.background = ko.observable<BackgroundStylePluginConfig>();
         this.sizeConfig = ko.observable<SizeStylePluginConfig>();
+        this.tabLabel = ko.observable<string>();
     }
 
     @Param()
@@ -45,12 +47,26 @@ export class TabsItemEditor {
     @OnMounted()
     public async initialize(): Promise<void> {
         this.updateObservables();
-        this.background.extend(ChangeRateLimit).subscribe(this.applyChanges);
-        this.sizeConfig.extend(ChangeRateLimit).subscribe(this.applyChanges);
+
+        this.background
+            .extend(ChangeRateLimit)
+            .subscribe(this.applyChanges);
+
+        this.sizeConfig
+            .extend(ChangeRateLimit)
+            .subscribe(this.applyChanges);
+
+        this.tabLabel
+            .extend(ChangeRateLimit)
+            .subscribe(this.applyChanges);
+
         this.eventManager.addEventListener(CommonEvents.onViewportChange, this.updateObservables);
+
     }
 
     private updateObservables(): void {
+        this.tabLabel(this.model.label);
+
         const viewport = this.viewManager.getViewport();
         const sectionStyles = this.model?.styles?.instance;
 
@@ -68,6 +84,8 @@ export class TabsItemEditor {
     }
 
     private applyChanges(): void {
+        this.model.label = this.tabLabel();
+
         const viewport = this.viewManager.getViewport();
         this.model.styles = this.model.styles || {};
 

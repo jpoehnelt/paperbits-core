@@ -7,6 +7,7 @@ import { TabsHandlers } from "./tabsHandlers";
 import { TabsItemHandlers } from "./tabsItemHandlers";
 import { TabsEditor } from "./ko";
 import { TabsItemEditor } from "./ko/tabsItemEditor";
+import { TabPanelStyleHandler } from "./tabsStyleHandler";
 
 export class TabsDesignModule implements IInjectorModule {
     public register(injector: IInjector): void {
@@ -17,5 +18,6 @@ export class TabsDesignModule implements IInjectorModule {
         injector.bindToCollection("viewModelBinders", TabsViewModelBinder);
         injector.bindToCollection<IWidgetHandler>("widgetHandlers", TabsHandlers, "tabsHandler");
         injector.bindToCollection<IWidgetHandler>("widgetHandlers", TabsItemHandlers, "tabsItemHandler");
+        injector.bindToCollection("styleHandlers", TabPanelStyleHandler);
     }
 }
